@@ -169,7 +169,7 @@ import { FlexPlugin } from "@twilio/flex-plugin";
 import { IconButton, Actions } from "@twilio/flex-ui";
 
 const PLUGIN_NAME = "VideoEscalationPlugin";
-const BASE_URL = "https://video-plugin-flex-9491.twil.io";
+const BASE_URL = "https://video-plugin-dummy-url.twil.io";
 
 export default class VideoEscalationPlugin extends FlexPlugin {
   constructor() {
