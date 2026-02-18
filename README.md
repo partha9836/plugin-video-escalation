@@ -1,4 +1,4 @@
-# 📹 Twilio Flex Video Escalation Plugin
+# Twilio Flex Video Escalation Plugin
 
 Enable agents to escalate a Flex conversation (WhatsApp / Chat / SMS) into a secure Twilio Video session with one click.
 
@@ -11,7 +11,7 @@ When an agent clicks the **Video button**:
 
 ---
 
-## 🏗 Architecture Overview
+## Architecture Overview
 
 ```
 Agent clicks Video button
@@ -27,7 +27,7 @@ Both join same Twilio Video Room
 
 ---
 
-# 📁 Project Structure
+# Project Structure
 
 ```
 /functions
@@ -42,7 +42,7 @@ Both join same Twilio Video Room
 
 ---
 
-# 1️⃣ Twilio Function – `get-tokens.js`
+# Twilio Function – `get-tokens.js`
 
 This serverless function:
 
@@ -112,7 +112,7 @@ exports.handler = async function (context, event, callback) {
 
 ---
 
-## 🔐 Required Environment Variables
+## Required Environment Variables
 
 Configure these in **Twilio Functions → Environment Variables**:
 
@@ -128,7 +128,7 @@ Twilio Console → Settings → API Keys
 
 ---
 
-# 2️⃣ Video Room UI – `video-room.html`
+# Video Room UI – `video-room.html`
 
 Standalone Twilio Video UI page.
 
@@ -152,7 +152,7 @@ https://your-domain.twil.io/video-room.html?token=ACCESS_TOKEN
 
 ---
 
-# 3️⃣ Flex Plugin – `VideoEscalationPlugin.js`
+# Flex Plugin – `VideoEscalationPlugin.js`
 
 Adds a **Video icon button** to the Task Canvas Header.
 
@@ -245,9 +245,9 @@ export default class VideoEscalationPlugin extends FlexPlugin {
 
 ---
 
-# 🚀 Installation
+# Installation
 
-## 1️⃣ Deploy Twilio Function
+## Deploy Twilio Function
 
 - Go to Twilio Console → Functions & Assets
 - Add `get-tokens.js`
@@ -255,7 +255,7 @@ export default class VideoEscalationPlugin extends FlexPlugin {
 - Set environment variables
 - Deploy
 
-## 2️⃣ Install Flex Plugin
+## Install Flex Plugin
 
 ```bash
 twilio flex:plugins:create video-escalation-plugin
@@ -278,7 +278,7 @@ twilio flex:plugins:release --plugin video-escalation-plugin@1.0.0
 
 ---
 
-# ✅ Production Notes
+# Production Notes
 
 - CORS enabled
 - Room scoped to Task SID
@@ -289,7 +289,7 @@ twilio flex:plugins:release --plugin video-escalation-plugin@1.0.0
 
 ---
 
-# 🔮 Optional Enhancements
+# Optional Enhancements
 
 - JWT validation inside Function
 - Room participant limit
@@ -299,7 +299,7 @@ twilio flex:plugins:release --plugin video-escalation-plugin@1.0.0
 
 ---
 
-# 🏁 Final Result
+# Final Result
 
 ✔ Flex 2.x plugin  
 ✔ Secure Twilio Video escalation  
@@ -309,7 +309,7 @@ twilio flex:plugins:release --plugin video-escalation-plugin@1.0.0
 
 ---
 
-## 📜 License
+## License
 
 MIT
 
