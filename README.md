@@ -141,7 +141,188 @@ Standalone Twilio Video UI page.
 - Mobile responsive
 
 ```html
-<!-- Use your full video-room.html file here -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Video Session</title>
+   <script src="https://sdk.twilio.com/js/video/releases/2.28.1/twilio-video.min.js"></script>
+   <style>
+       body {
+           font-family: 'Inter', -apple-system, sans-serif;
+           background: #0d121b;
+           color: white;
+           margin: 0;
+           display: flex;
+           flex-direction: column;
+           height: 100vh;
+           overflow: hidden;
+       }
+
+       #video-grid {
+           display: grid;
+           grid-template-columns: 1fr 1fr;
+           gap: 15px;
+           padding: 20px;
+           flex-grow: 1;
+           align-items: center;
+           background: radial-gradient(circle at center, #1a202c 0%, #0d121b 100%);
+       }
+
+       .video-container { 
+           position: relative; 
+           width: 100%; 
+       }
+      
+       .label {
+           position: absolute;
+           bottom: 15px;
+           left: 15px;
+           background: rgba(0, 0, 0, 0.6);
+           padding: 4px 12px;
+           border-radius: 4px;
+           font-size: 12px;
+           z-index: 10;
+       }
+
+       video {
+           width: 100%;
+           border-radius: 12px;
+           background: #222;
+           box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+           border: 2px solid #2d3748;
+           object-fit: cover;
+           aspect-ratio: 16 / 9;
+       }
+
+       .controls {
+           padding: 25px;
+           background: #1a202c;
+           display: flex;
+           gap: 20px;
+           justify-content: center;
+           border-top: 1px solid #2d3748;
+       }
+
+       button {
+           background: #F22F46;
+           color: white;
+           border: none;
+           padding: 12px 30px;
+           border-radius: 50px;
+           cursor: pointer;
+           font-weight: bold;
+           transition: all 0.2s ease;
+       }
+
+       button:hover { background: #d9263c; transform: translateY(-2px); }
+       button#end-btn { background: #ff4d4d; }
+
+       @media (max-width: 768px) {
+           #video-grid { grid-template-columns: 1fr; }
+       }
+   </style>
+</head>
+
+<body>
+   <div id="video-grid">
+       <div class="video-container">
+           <div id="remote-media"></div>
+           <div class="label">Remote Participant</div>
+       </div>
+       <div class="video-container">
+           <div id="local-media"></div>
+           <div class="label">You (Local)</div>
+       </div>
+   </div>
+
+   <div class="controls">
+       <button id="end-btn">End Session</button>
+   </div>
+
+   <script>
+       const urlParams = new URLSearchParams(window.location.search);
+       const token = urlParams.get('token');
+       let activeRoom;
+
+       if (!token) {
+           alert("Missing access token.");
+       } else {
+
+           Twilio.Video.connect(token, { audio: true, video: true })
+           .then(room => {
+
+               activeRoom = room;
+               console.log(`Connected to: ${room.name}`);
+
+               room.localParticipant.tracks.forEach(publication => {
+                   const track = publication.track;
+                   document
+                       .getElementById('local-media')
+                       .appendChild(track.attach());
+               });
+
+               // Handle already connected participants
+               room.participants.forEach(participantConnected);
+
+               // Handle new participants
+               room.on('participantConnected', participantConnected);
+
+               // Clean disconnect
+               room.on('disconnected', () => {
+                   cleanup();
+               });
+           })
+           .catch(error => {
+               console.error("Connection error:", error);
+               alert("Unable to connect to video room.");
+           });
+       }
+
+       //IMPROVED: Handle existing + future tracks
+       function participantConnected(participant) {
+
+           // Attach already subscribed tracks
+           participant.tracks.forEach(publication => {
+               if (publication.isSubscribed) {
+                   document
+                       .getElementById('remote-media')
+                       .appendChild(publication.track.attach());
+               }
+           });
+
+           // Handle future subscriptions
+           participant.on('trackSubscribed', track => {
+               document
+                   .getElementById('remote-media')
+                   .appendChild(track.attach());
+           });
+       }
+
+       function cleanup() {
+           console.log("Left the room");
+
+           document.getElementById('local-media').innerHTML = "";
+           document.getElementById('remote-media').innerHTML = "";
+
+           alert("Call Ended");
+           window.close();
+       }
+
+       document.getElementById('end-btn').addEventListener('click', () => {
+           if (activeRoom) {
+               activeRoom.disconnect();
+           }
+       });
+
+       window.onbeforeunload = () => {
+           if (activeRoom) activeRoom.disconnect();
+       };
+   </script>
+</body>
+</html>
+
 ```
 
 The page expects a token in the URL:
